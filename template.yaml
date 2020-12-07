@@ -1,0 +1,112 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  nodejs-crud
+
+Globals:
+  Function:
+    Timeout: 3
+
+Resources:
+  GetAllCounters:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/
+      Handler: getAllCounters.getAllCounters
+      Runtime: nodejs10.x
+      Layers:
+        - !Ref NodejsCRUDLayers
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /counters
+            Method: get
+  CreateCounter:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/
+      Handler: createCounter.createCounter
+      Runtime: nodejs10.x
+      Layers:
+        - !Ref NodejsCRUDLayers
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /counters
+            Method: post
+
+  UpdateCounter:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/
+      Handler: updateCounter.updateCounter
+      Runtime: nodejs10.x
+      Layers:
+        - !Ref NodejsCRUDLayers
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /counters/{counterId}
+            Method: put
+  DeleteCounter:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/
+      Handler: deleteCounter.deleteCounter
+      Runtime: nodejs10.x
+      Layers:
+        - !Ref NodejsCRUDLayers
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /counters/{counterId}
+            Method: delete
+
+  GetSingleCounter:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/
+      Handler: getSingleCounter.getSingleCounter
+      Runtime: nodejs10.x
+      Layers:
+        - !Ref NodejsCRUDLayers
+      Events:
+        HelloWorld:
+          Type: Api
+          Properties:
+            Path: /counters/{counterId}
+            Method: get
+
+  NodejsCRUDLayers:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      LayerName: crud-backend-dependencies
+      ContentUri: layers/
+      CompatibleRuntimes:
+        - nodejs10.x
+      LicenseInfo: 'MIT'
+      RetentionPolicy: Retain
+
+Outputs:
+  NodejsCRUDApi:
+    Description: 'API Gateway endpoint URL for Prod stage for nodejs-crud'
+    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/'
+  GetAllCountersFunction:
+    Description: 'GetAllCounters Lambda Function ARN'
+    Value: !GetAtt GetAllCounters.Arn
+  CreateCounterFunction:
+    Description: 'CreateCounter Lambda Function ARN'
+    Value: !GetAtt CreateCounter.Arn
+  UpdateCounterFunction:
+    Description: 'UpdateCounter Lambda Function ARN'
+    Value: !GetAtt UpdateCounter.Arn
+  DeleteCounterFunction:
+    Description: 'DeleteCounter Lambda Function ARN'
+    Value: !GetAtt DeleteCounter.Arn
+  GetSingleCounterFunction:
+    Description: 'GetSingleCounter Lambda Function ARN'
+    Value: !GetAtt GetSingleCounter.Arn
