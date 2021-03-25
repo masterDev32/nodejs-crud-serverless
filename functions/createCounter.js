@@ -3,7 +3,7 @@ const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 let response;
 
-exports.createCounter = async (event, context) => {
+exports.createCounter = async (event, _) => {
   const { body } = JSON.parse(JSON.stringify(event));
   const counterObj = Object.assign({ id: uuidv4() }, JSON.parse(body));
   const params = {

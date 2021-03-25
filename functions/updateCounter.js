@@ -2,9 +2,9 @@ const AWS = require('aws-sdk');
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 let response;
 
-exports.updateCounter = async (event, context) => {
+exports.updateCounter = async (event, _) => {
   const { pathParameters } = event;
-  const dynamoParams = {
+  const params = {
     TableName: process.env.DYNAMO_TABLE,
     Key: {
       id: pathParameters.counterId,
@@ -19,8 +19,8 @@ exports.updateCounter = async (event, context) => {
   };
 
   try {
-    const result = await dynamoDb.update(dynamoParams).promise();
-    response = { statusCode: 200, body: JSON.stringify(result.Attributes) };
+    const queryResult = await dynamoDb.update(params).promise();
+    response = { statusCode: 200, body: JSON.stringify(queryResult.Attributes) };
   } catch (error) {
     response = { statusCode: 404, body: JSON.stringify('Not found') };
   }
